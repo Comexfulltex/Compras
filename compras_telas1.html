@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión de Compras — Telas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #e0dbd2;
+    --text: #1a1814;
+    --text2: #6b6560;
+    --text3: #9e9890;
+    --accent: #1a1814;
+    --blue-bg: #e8f0fb; --blue-txt: #1a4a9e;
+    --green-bg: #e4f4e0; --green-txt: #1e6b18;
+    --amber-bg: #fef3d8; --amber-txt: #8a5a00;
+    --red-bg: #fde8e8; --red-txt: #9e1a1a;
+    --purple-bg: #ede8fb; --purple-txt: #4a1a9e;
+    --teal-bg: #e0f4f0; --teal-txt: #0e6b5a;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .brand { font-weight: 600; font-size: 15px; letter-spacing: -0.3px; }
+  .brand span { color: var(--text2); font-weight: 400; }
+  .sheets-btn {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .15s;
+  }
+  .sheets-btn:hover { background: var(--surface2); color: var(--text); }
+  .sheets-btn svg { width: 14px; height: 14px; }
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+  }
+  .tab {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color .15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--text); }
+
+  /* ── LAYOUT ── */
+  main { padding: 1.5rem 2rem; max-width: 1400px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── METRICS ── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .metric-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+  .metric-value.danger { color: #c0392b; }
+  .metric-value.warn { color: #8a5a00; }
+
+  /* ── FILTERS ── */
+  .filters {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .filter-group select,
+  .filter-group input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface2);
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+    min-width: 140px;
+  }
+  .filter-group select:hover,
+  .filter-group input:hover { border-color: #c0b8ae; }
+  .filter-group select:focus,
+  .filter-group input:focus { border-color: var(--text); background: var(--surface); }
+
+  .clear-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    align-self: flex-end;
+  }
+  .clear-btn:hover { background: var(--surface2); }
+
+  .filter-summary {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 8px;
+    font-family: 'DM Mono', monospace;
+  }
+  .filter-summary b { color: var(--text2); font-weight: 500; }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+  }
+  thead { background: var(--surface2); }
+  th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--text); }
+  th.sort-asc::after { content: ' ↑'; }
+  th.sort-desc::after { content: ' ↓'; }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #faf9f6; }
+  .mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .muted { color: var(--text2); }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .badge-despachado { background: var(--green-bg); color: var(--green-txt); }
+  .badge-despachado::before { background: var(--green-txt); }
+  .badge-puerto { background: var(--blue-bg); color: var(--blue-txt); }
+  .badge-puerto::before { background: var(--blue-txt); }
+  .badge-pendiente { background: var(--amber-bg); color: var(--amber-txt); }
+  .badge-pendiente::before { background: var(--amber-txt); }
+  .badge-demorado { background: var(--red-bg); color: var(--red-txt); }
+  .badge-demorado::before { background: var(--red-txt); }
+  .badge-transito { background: var(--purple-bg); color: var(--purple-txt); }
+  .badge-transito::before { background: var(--purple-txt); }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .tag-hogar { background: var(--teal-bg); color: var(--teal-txt); border-color: transparent; }
+  .tag-moda { background: var(--purple-bg); color: var(--purple-txt); border-color: transparent; }
+  .tag-basicos { background: var(--green-bg); color: var(--green-txt); border-color: transparent; }
+  .tag-cotillon { background: var(--amber-bg); color: var(--amber-txt); border-color: transparent; }
+
+  /* ── DASHBOARD CHARTS ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  @media (max-width: 900px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 1rem;
+  }
+
+  /* bar charts */
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+  .bar-label { font-size: 12px; color: var(--text2); min-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 18px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; min-width: 40px; transition: width .4s ease; }
+  .bar-fill span { font-size: 10px; font-weight: 600; font-family: 'DM Mono', monospace; color: rgba(255,255,255,.9); white-space: nowrap; }
+
+  /* estado donut */
+  .donut-wrap { display: flex; align-items: center; gap: 1rem; }
+  .donut-legend { flex: 1; }
+  .legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 12px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; color: var(--text2); }
+  .legend-val { font-weight: 500; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text); }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; }
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .timeline-item:last-child { border-bottom: none; }
+  .tl-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text3); min-width: 80px; padding-top: 2px; }
+  .tl-body { flex: 1; }
+  .tl-title { font-weight: 500; font-size: 13px; margin-bottom: 2px; }
+  .tl-sub { font-size: 12px; color: var(--text2); }
+  .tl-meta { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+  .tl-meta span { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+  .tl-meta b { color: var(--text2); }
+
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 13px; }
+
+  /* ── FOB EVOLUTION (mini sparklines) ── */
+  .fob-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  .fob-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .fob-tela { font-weight: 500; font-size: 13px; }
+  .fob-prov { font-size: 11px; color: var(--text3); }
+  .fob-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fob-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .fob-chip span { color: var(--text); font-weight: 500; }
+
+  /* scrollable table for narrow screens */
+  .table-scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Compras <span>/ Telas</span></div>
+
+</header>
+
+<nav>
+  <button class="tab active" onclick="switchTab('fobs',this)">FOBs por tela</button>
+  <button class="tab" onclick="switchTab('evolucion',this)">Evolución FOB</button>
+  <button class="tab" onclick="switchTab('estado',this)">Estado de órdenes</button>
+</nav>
+
+<main>
+
+  <!-- ═══ TAB 1: FOBs por tela ═══ -->
+  <div id="fobs" class="section active">
+    <div class="filters">
+      <div class="filter-group">
+        <label>Tela / artículo</label>
+        <input type="text" id="f-tela" list="f-tela-list" placeholder="Seleccioná o escribí..." onchange="renderFobs()" oninput="renderFobs()" autocomplete="off" style="min-width:220px;">
+        <datalist id="f-tela-list"></datalist>
+      </div>
+      <div class="filter-group">
+        <label>Proveedor</label>
+        <select id="f-prov" onchange="renderFobs()"><option value="">Todos</option></select>
+      </div>
+      <button class="clear-btn" onclick="clearFilters()">✕ Limpiar</button>
+    </div>
+
+
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <colgroup>
+            <col style="width:110px">
+            <col style="width:200px">
+            <col style="width:90px">
+            <col style="width:110px">
+            <col style="width:180px">
+            <col style="width:130px">
+            <col style="width:90px">
+            <col style="width:110px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortTable('_fecha_sort')">F. Compra</th>
+              <th class="sortable" onclick="sortTable('tela')">Tela</th>
+              <th class="sortable" onclick="sortTable('fob_unit')">FOB unit.</th>
+              <th>Grupo color</th>
+              <th class="sortable" onclick="sortTable('proveedor')">Proveedor</th>
+              <th>N° Orden</th>
+              <th>Unidad</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+  <div id="load-status" style="padding:2rem;text-align:center;color:var(--text2);font-size:13px;">⏳ Cargando datos desde Sheets...</div>
+          <tbody id="fobs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB 2: Evolución FOB ═══ -->
+  <div id="evolucion" class="section">
+    <div class="filters" style="margin-bottom:1rem;">
+      <div class="filter-group">
+        <label>Tela</label>
+        <input type="text" id="e-search" list="e-search-list" placeholder="Seleccioná o escribí..." oninput="renderEvolucion()" autocomplete="off" style="min-width:220px;">
+        <datalist id="e-search-list"></datalist>
+      </div>
+      <div class="filter-group">
+        <label>Proveedor</label>
+        <select id="e-prov" onchange="renderEvolucion()"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Fecha compra desde</label>
+        <input type="date" id="e-desde" onchange="renderEvolucion()">
+      </div>
+      <div class="filter-group">
+        <label>Hasta</label>
+        <input type="date" id="e-hasta" onchange="renderEvolucion()">
+      </div>
+      <button class="clear-btn" onclick="clearEvolucion()">✕ Limpiar</button>
+    </div>
+    <div class="filter-summary" id="evol-summary"></div>
+    <div id="evol-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:1rem;"></div>
+  </div>
+
+  <!-- ═══ TAB 3: Estado de órdenes ═══ -->
+  <div id="estado" class="section">
+    <div class="filters" style="align-items:flex-end;flex-wrap:wrap;gap:12px;">
+      <div class="filter-group">
+        <label>Tela / artículo</label>
+        <input type="text" id="est-tela" list="est-tela-list" placeholder="Seleccioná o escribí..." oninput="renderEstado()" autocomplete="off" style="min-width:220px;">
+        <datalist id="est-tela-list"></datalist>
+      </div>
+      <div class="filter-group">
+        <label>Proveedor</label>
+        <select id="est-prov" onchange="renderEstado()"><option value="">Todos</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select id="est-estado" onchange="renderEstado()"><option value="">Todos</option></select>
+      </div>
+      <button class="clear-btn" onclick="clearEstado()">✕ Limpiar</button>
+      <div id="est-counters" style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto;"></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <colgroup>
+            <col style="width:140px">
+            <col style="width:200px">
+            <col style="width:110px">
+            <col style="width:110px">
+            <col style="width:130px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortEstado('orden')">N° Orden</th>
+              <th class="sortable" onclick="sortEstado('tela')">Tela</th>
+              <th class="sortable" onclick="sortEstado('_arribo_sort')">F. Arribo est.</th>
+              <th>Estado</th>
+              <th>Estacionalidad</th>
+            </tr>
+          </thead>
+          <tbody id="estado-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+</main>
+
+<script>
+// ──────────────────────────────────────────────
+// DATA — cargado en vivo desde Google Sheets
+// ──────────────────────────────────────────────
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT73bJxoJXuBlDBL1SYJwNGqzy9dOYmwfvp9ZFLNb2qD8tVWXbQB1yj-zMhWauCTZL1CmJJQlDiWRes/pub?gid=0&single=true&output=csv';
+
+let DATA = [];
+
+// parse dates dd/mm/yyyy → yyyy-mm-dd for comparison
+function parseDate(s) {
+  if (!s || !s.includes('/')) return '';
+  const parts = s.split('/');
+  if (parts.length !== 3) return '';
+  const [d,m,y] = parts;
+  return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+}
+function formatDate(s) { return s; }
+function fmt(n) { return n.toLocaleString('es-AR'); }
+function fmtUSD(n) { return 'USD ' + Math.round(n).toLocaleString('es-AR'); }
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; }
+    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function parseNum(s) {
+  if (!s) return 0;
+  return parseFloat(s.replace(/\./g,'').replace(',','.')) || 0;
+}
+
+async function loadData() {
+  const statusEl = document.getElementById('load-status');
+  try {
+    const resp = await fetch(CSV_URL);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const text = await resp.text();
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cols = parseCSVLine(lines[i]);
+      if (cols.length < 12) continue;
+      const fecha = cols[0]?.trim();
+      if (!fecha || fecha === '' || fecha === '(en blanco)') continue;
+      if (fecha.toLowerCase().includes('total')) continue;
+      rows.push([
+        fecha,              // 0 fecha compra
+        cols[1]?.trim(),   // 1 tela
+        cols[2]?.trim(),   // 2 color
+        parseNum(cols[3]), // 3 fob unit
+        cols[4]?.trim(),   // 4 orden
+        cols[5]?.trim(),   // 5 proveedor
+        cols[6]?.trim(),   // 6 estado
+        cols[7]?.trim(),   // 7 fecha arribo
+        cols[8]?.trim(),   // 8 codun
+        cols[9]?.trim(),   // 9 estacionalidad
+        cols[10]?.trim(),  // 10 categoria
+        cols[11]?.trim(),  // 11 unidad
+        parseNum(cols[12]),// 12 rollos
+        parseNum(cols[13]),// 13 cant est
+        parseNum(cols[14]), // 14 fob total
+        parseNum(cols[15])  // 15 cuenta_cntr
+      ]);
+    }
+    DATA = rows.map(r => ({
+      fecha: r[0], tela: r[1], color: r[2], fob_unit: r[3],
+      orden: r[4], proveedor: r[5], estado: r[6], arribo: r[7],
+      codun: r[8], estacionalidad: r[9], categoria: r[10],
+      unidad: r[11], rollos: r[12], cant_est: r[13], fob_total: r[14], cuenta_cntr: r[15]||0,
+      _fecha_sort: parseDate(r[0]), _arribo_sort: parseDate(r[7])
+    }));
+    if (statusEl) statusEl.remove();
+    populateFilters();
+    renderFobs();
+    renderEstado();
+    waitForChartAndRender();
+  } catch(e) {
+    if (statusEl) statusEl.textContent = '⚠️ Error cargando datos: ' + e.message;
+    console.error(e);
+  }
+}
+
+function waitForChartAndRender() {
+  if (typeof Chart !== 'undefined') { renderEvolucion(); }
+  else { setTimeout(waitForChartAndRender, 100); }
+}
+
+
+// ── SORT state ──
+let sortCol = '_fecha_sort', sortDir = -1;
+
+function sortTable(col) {
+  if(sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = -1; }
+  document.querySelectorAll('th.sortable').forEach(t => t.classList.remove('sort-asc','sort-desc'));
+  event.target.classList.add(sortDir === -1 ? 'sort-desc' : 'sort-asc');
+  renderFobs();
+}
+
+// ── POPULATE FILTERS ──
+function uniq(arr) { return [...new Set(arr)].sort(); }
+function populateFilters() {
+  const selectors = {
+    'f-prov': uniq(DATA.map(d=>d.proveedor)),
+    'e-prov': uniq(DATA.map(d=>d.proveedor)),
+  };
+  for(const [id, vals] of Object.entries(selectors)) {
+    const el = document.getElementById(id); if(!el) continue;
+    vals.forEach(v => { const o = document.createElement('option'); o.value=v; o.textContent=v; el.appendChild(o); });
+  }
+  // Datalist tela FOBs
+  const dlF = document.getElementById('f-tela-list');
+  uniq(DATA.map(d=>d.tela)).forEach(t => { const o = document.createElement('option'); o.value=t; dlF.appendChild(o); });
+  // Fechas para evolución
+  const dates = DATA.map(d=>d._fecha_sort).sort();
+  document.getElementById('e-desde').value = dates[0];
+  document.getElementById('e-hasta').value = dates[dates.length-1];
+  // Datalist de telas (evolución)
+  const dl = document.getElementById('e-search-list');
+  uniq(DATA.map(d=>d.tela)).forEach(t => {
+    const o = document.createElement('option'); o.value = t; dl.appendChild(o);
+  });
+  // Filtros tab Estado
+  const activeData = DATA.filter(d => !EXCLUIR_ESTADOS.includes(d.estado));
+  const estProvSel = document.getElementById('est-prov');
+  if (estProvSel) uniq(activeData.map(d=>d.proveedor)).forEach(v => {
+    const o = document.createElement('option'); o.value=v; o.textContent=v; estProvSel.appendChild(o);
+  });
+  const estEstadoSel = document.getElementById('est-estado');
+  if (estEstadoSel) uniq(activeData.map(d=>d.estado)).forEach(v => {
+    const o = document.createElement('option'); o.value=v; o.textContent=v; estEstadoSel.appendChild(o);
+  });
+  const estTelaList = document.getElementById('est-tela-list');
+  if (estTelaList) uniq(activeData.map(d=>d.tela)).forEach(t => {
+    const o = document.createElement('option'); o.value=t; estTelaList.appendChild(o);
+  });
+}
+
+function clearFilters() {
+  document.getElementById('f-tela').value = '';
+  document.getElementById('f-prov').value = '';
+  renderFobs();
+}
+
+function getFiltered() {
+  const tela = document.getElementById('f-tela').value.toLowerCase();
+  const prov = document.getElementById('f-prov').value;
+  return DATA.filter(d => {
+    if(tela && !d.tela.toLowerCase().includes(tela)) return false;
+    if(prov && d.proveedor !== prov) return false;
+    return true;
+  }).sort((a,b) => {
+    const va = a[sortCol] ?? 0, vb = b[sortCol] ?? 0;
+    if(va > vb) return sortDir;
+    if(va < vb) return -sortDir;
+    return 0;
+  });
+}
+
+function badgeClass(estado) {
+  const map = { 'Despachado':'badge-despachado','Puerto':'badge-puerto','Pendiente':'badge-pendiente','Demorado':'badge-demorado','En tránsito':'badge-transito' };
+  return map[estado] || 'badge-pendiente';
+}
+function tagClass(cat) {
+  const map = { 'Hogar':'tag-hogar','Moda':'tag-moda','Basicos':'tag-basicos','Cotillon':'tag-cotillon' };
+  return map[cat] || '';
+}
+
+// ── RENDER TAB 1 ──
+function renderFobs() {
+  const data = getFiltered();
+  const tbody = document.getElementById('fobs-tbody');
+  if(!data.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Sin resultados para los filtros aplicados</td></tr>`;
+    document.getElementById('fobs-summary').textContent = '';
+    return;
+  }
+
+  // Agrupar por orden+tela para detectar si el FOB varía
+  const grupos = {};
+  data.forEach(d => {
+    const key = d.orden + '||' + d.tela;
+    if(!grupos[key]) grupos[key] = [];
+    grupos[key].push(d);
+  });
+
+  // Construir filas: colapsar si todos los FOBs del grupo son iguales
+  const rows = [];
+  // Mantener orden original usando el primer elemento de cada grupo
+  const seen = new Set();
+  data.forEach(d => {
+    const key = d.orden + '||' + d.tela;
+    if(seen.has(key)) return;
+    seen.add(key);
+    const grupo = grupos[key];
+    const fobs = grupo.map(g => g.fob_unit);
+    const todosIguales = fobs.every(f => f === fobs[0]);
+    if(todosIguales) {
+      // Una sola fila, sin grupo color
+      rows.push(`
+        <tr>
+          <td class="mono muted">${d.fecha}</td>
+          <td style="font-weight:500">${d.tela}</td>
+          <td class="mono" style="font-weight:600">$${d.fob_unit.toFixed(2)}</td>
+          <td class="muted" style="font-size:12px;color:var(--text3)">—</td>
+          <td class="muted">${d.proveedor}</td>
+          <td class="mono muted" style="font-size:11px">${d.orden}</td>
+          <td><span class="tag">${d.unidad}</span></td>
+          <td><span class="badge ${badgeClass(d.estado)}">${d.estado}</span></td>
+        </tr>`);
+    } else {
+      // Una fila por cada variante de color con su FOB
+      grupo.forEach(g => {
+        rows.push(`
+          <tr>
+            <td class="mono muted">${g.fecha}</td>
+            <td style="font-weight:500">${g.tela}</td>
+            <td class="mono" style="font-weight:600">$${g.fob_unit.toFixed(2)}</td>
+            <td><span class="tag">${g.color}</span></td>
+            <td class="muted">${g.proveedor}</td>
+            <td class="mono muted" style="font-size:11px">${g.orden}</td>
+            <td><span class="tag">${g.unidad}</span></td>
+            <td><span class="badge ${badgeClass(g.estado)}">${g.estado}</span></td>
+          </tr>`);
+      });
+    }
+  });
+
+  tbody.innerHTML = rows.join('');
+}
+
+// ── RENDER TAB 2 ──
+// ── RENDER TAB 3: Estado de órdenes ──
+let estSortCol = 'orden', estSortDir = 1;
+const EXCLUIR_ESTADOS = ['Despachado', 'Cancelada'];
+
+const BADGE_COLORS = {
+  'Puerto':         { bg:'#e8f0fb', txt:'#1a4a9e' },
+  'Embarcado':      { bg:'#ede8fb', txt:'#4a1a9e' },
+  'En Produccion':  { bg:'#fef3d8', txt:'#8a5a00' },
+  'Sin Disposicion':{ bg:'#fde8e8', txt:'#9e1a1a' },
+  'default':        { bg:'#e0f4f0', txt:'#0e6b5a' },
+};
+
+function estadoBadgeStyle(estado) {
+  const c = BADGE_COLORS[estado] || BADGE_COLORS['default'];
+  return `background:${c.bg};color:${c.txt};padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;`;
+}
+
+function renderEstadoCounters(data) {
+  const el = document.getElementById('est-counters');
+  if (!el) return;
+  // group by estado, sum cuenta_cntr
+  const groups = {};
+  data.forEach(d => {
+    if (!groups[d.estado]) groups[d.estado] = 0;
+    groups[d.estado] += d.cuenta_cntr;
+  });
+  el.innerHTML = Object.entries(groups)
+    .sort((a,b) => b[1]-a[1])
+    .map(([est, val]) => {
+      const c = BADGE_COLORS[est] || BADGE_COLORS['default'];
+      const num = Number.isInteger(val) ? val : val.toFixed(2);
+      return `<div style="display:flex;align-items:center;gap:5px;background:${c.bg};color:${c.txt};padding:5px 10px;border-radius:6px;font-size:12px;font-weight:500;">
+        <span style="font-weight:700;font-size:14px;">${num}</span>
+        <span>${est}</span>
+      </div>`;
+    }).join('');
+}
+
+function renderEstado() {
+  const tela = (document.getElementById('est-tela')?.value || '').toLowerCase();
+  const prov = document.getElementById('est-prov')?.value || '';
+  const estado = document.getElementById('est-estado')?.value || '';
+
+  let data = DATA.filter(d => !EXCLUIR_ESTADOS.includes(d.estado));
+  if (prov) data = data.filter(d => d.proveedor === prov);
+  if (tela) data = data.filter(d => d.tela.toLowerCase().includes(tela));
+  if (estado) data = data.filter(d => d.estado === estado);
+
+  // Agrupar por orden+tela → una fila por combinación, sumando cuenta_cntr
+  const grouped = {};
+  data.forEach(d => {
+    const key = d.orden + '||' + d.tela;
+    if (!grouped[key]) grouped[key] = { ...d, cuenta_cntr: 0 };
+    grouped[key].cuenta_cntr += d.cuenta_cntr;
+  });
+  let deduped = Object.values(grouped);
+
+  deduped.sort((a, b) => {
+    const va = a[estSortCol] ?? '', vb = b[estSortCol] ?? '';
+    if (va > vb) return estSortDir;
+    if (va < vb) return -estSortDir;
+    return 0;
+  });
+
+  const tbody = document.getElementById('estado-tbody');
+  if (!tbody) return;
+
+  if (!deduped.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Sin resultados</td></tr>';
+    return;
+  }
+
+  renderEstadoCounters(data);
+
+  tbody.innerHTML = deduped.map(d => `
+    <tr>
+      <td class="mono" style="font-size:11px;font-weight:500">${d.orden}</td>
+      <td style="font-weight:500">${d.tela}</td>
+      <td class="mono muted">${d.arribo || '—'}</td>
+      <td><span style="${estadoBadgeStyle(d.estado)}">${d.estado}</span></td>
+      <td class="muted" style="font-size:12px">${d.estacionalidad || '—'}</td>
+    </tr>`).join('');
+}
+
+function sortEstado(col) {
+  if (estSortCol === col) estSortDir *= -1; else { estSortCol = col; estSortDir = -1; }
+  renderEstado();
+}
+
+function clearEstado() {
+  const t = document.getElementById('est-tela'); if(t) t.value = '';
+  const p = document.getElementById('est-prov'); if(p) p.value = '';
+  const e = document.getElementById('est-estado'); if(e) e.value = '';
+  renderEstado();
+}
+function clearEvolucion() {
+  document.getElementById('e-search').value = '';
+  document.getElementById('e-prov').value = '';
+  const dates = DATA.map(d=>d._fecha_sort).sort();
+  document.getElementById('e-desde').value = dates[0];
+  document.getElementById('e-hasta').value = dates[dates.length-1];
+  renderEvolucion();
+}
+
+// ── RENDER TAB 3: Evolución FOB ──
+const evolCharts = {};
+
+function renderEvolucion() {
+  const search = (document.getElementById('e-search').value||'').toLowerCase();
+  const prov = document.getElementById('e-prov').value;
+  const desde = document.getElementById('e-desde').value;
+  const hasta = document.getElementById('e-hasta').value;
+  let data = DATA;
+  if(prov) data = data.filter(d=>d.proveedor===prov);
+  if(search) data = data.filter(d=>d.tela.toLowerCase().includes(search));
+  if(desde) data = data.filter(d=>d._fecha_sort >= desde);
+  if(hasta) data = data.filter(d=>d._fecha_sort <= hasta);
+
+  // Agrupar por tela → por color → puntos en el tiempo
+  const telas = {};
+  data.forEach(d => {
+    if(!telas[d.tela]) telas[d.tela] = { proveedores: new Set(), colores: {} };
+    telas[d.tela].proveedores.add(d.proveedor);
+    if(!telas[d.tela].colores[d.color]) telas[d.tela].colores[d.color] = [];
+    // Evitar duplicados por misma fecha+color+fob
+    const existe = telas[d.tela].colores[d.color].find(p => p.fecha === d._fecha_sort && p.fob === d.fob_unit);
+    if(!existe) telas[d.tela].colores[d.color].push({ fecha: d._fecha_sort, label: d.fecha, fob: d.fob_unit });
+  });
+
+  const telaKeys = Object.keys(telas).sort();
+  document.getElementById('evol-summary').innerHTML = `<b>${telaKeys.length}</b> telas encontradas`;
+
+  if(!telaKeys.length) {
+    document.getElementById('evol-cards').innerHTML = '<div class="empty-state">Sin resultados.</div>';
+    return;
+  }
+
+  // Destruir charts anteriores
+  Object.values(evolCharts).forEach(c => c.destroy());
+  for(const k in evolCharts) delete evolCharts[k];
+
+  const PALETTE = ['#1a4a9e','#1e6b18','#c0392b','#8a5a00','#4a1a9e','#0e6b5a','#6b1a6b','#1a6b6b'];
+
+  document.getElementById('evol-cards').innerHTML = telaKeys.map(tela => {
+    const info = telas[tela];
+    const colores = Object.keys(info.colores);
+    const todosIgualesFob = colores.every(c => {
+      const fobs = info.colores[c].map(p=>p.fob);
+      return fobs.every(f=>f===fobs[0]);
+    });
+    // Todos los labels de fecha únicos ordenados
+    const allFechas = [...new Set(
+      Object.values(info.colores).flat().map(p=>p.fecha)
+    )].sort();
+    const allLabels = allFechas.map(f => {
+      const found = Object.values(info.colores).flat().find(p=>p.fecha===f);
+      return found ? found.label : f;
+    });
+
+    const minFob = Math.min(...Object.values(info.colores).flat().map(p=>p.fob));
+    const maxFob = Math.max(...Object.values(info.colores).flat().map(p=>p.fob));
+    const canvasId = 'chart-evol-' + tela.replace(/\s+/g,'_');
+
+    return `<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div>
+          <div style="font-weight:500;font-size:14px;">${tela}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">${[...info.proveedores].join(', ')}</div>
+        </div>
+        <div style="text-align:right;font-size:12px;color:var(--text3);">
+          min <b style="color:var(--text2)">$${minFob.toFixed(2)}</b> · max <b style="color:var(--text2)">$${maxFob.toFixed(2)}</b>
+        </div>
+      </div>
+      <div style="position:relative;height:180px;">
+        <canvas id="${canvasId}" role="img" aria-label="Evolución FOB de ${tela}"></canvas>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Renderizar charts después del DOM
+  setTimeout(() => {
+    telaKeys.forEach(tela => {
+      const info = telas[tela];
+      const colores = Object.keys(info.colores);
+      const allFechas = [...new Set(
+        Object.values(info.colores).flat().map(p=>p.fecha)
+      )].sort();
+      const allLabels = allFechas.map(f => {
+        const found = Object.values(info.colores).flat().find(p=>p.fecha===f);
+        return found ? found.label : f;
+      });
+
+      const todosIgualesFob = colores.length === 1 ||
+        Object.values(info.colores).flat().map(p=>p.fob)
+          .every((f,_,a)=>f===a[0]);
+
+      const datasets = colores.map((color, i) => {
+        const puntos = info.colores[color].sort((a,b)=>a.fecha.localeCompare(b.fecha));
+        const dataMap = {};
+        puntos.forEach(p => { dataMap[p.fecha] = p.fob; });
+        return {
+          label: todosIgualesFob ? tela : color,
+          data: allFechas.map(f => dataMap[f] ?? null),
+          borderColor: PALETTE[i % PALETTE.length],
+          backgroundColor: PALETTE[i % PALETTE.length] + '18',
+          pointBackgroundColor: PALETTE[i % PALETTE.length],
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          borderWidth: 2,
+          tension: 0.3,
+          spanGaps: false,
+          fill: colores.length === 1,
+        };
+      });
+
+      const canvasId = 'chart-evol-' + tela.replace(/\s+/g,'_');
+      const ctx = document.getElementById(canvasId);
+      if(!ctx) return;
+
+      const allFobs = Object.values(info.colores).flat().map(p=>p.fob);
+      const minY = Math.max(0, Math.min(...allFobs) * 0.85);
+      const maxY = Math.max(...allFobs) * 1.15;
+
+      evolCharts[tela] = new Chart(ctx, {
+        type: 'line',
+        data: { labels: allLabels, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: colores.length > 1, position: 'bottom', labels: { boxWidth: 10, font: { size: 11 }, padding: 10 } },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { font: { size: 10 }, maxRotation: 35 }, grid: { color: '#e0dbd2' } },
+            y: {
+              min: minY, max: maxY,
+              ticks: { font: { size: 10 }, callback: v => '$' + v.toFixed(2) },
+              grid: { color: '#e0dbd2' }
+            }
+          }
+        }
+      });
+    });
+  }, 0);
+}
+
+// ── TAB SWITCH ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── INIT ──
+loadData();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</body>
+</html>
